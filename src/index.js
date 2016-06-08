@@ -1,19 +1,28 @@
 import Koa from 'koa'
 import Router from 'koa-router'
-import logger from 'koa-logger'
 import compress from 'koa-compress'
 import { compile } from 'handlebars'
 import fs from 'mz/fs'
+import path from 'path'
+import body_parser from 'co-body'
 
 const app = new Koa()
 const router = new Router()
 
 router.get('/', async (context) => {
-  const source = await fs.readFile('src/index.html', 'utf8')
+  const source = await fs.readFile(path.join(__dirname, 'index.html'), 'utf8')
   const template = compile(source)
   const html = template()
   context.body = html
-  context.status = 200
+})
+
+router.post('/forms/post', async (context) => {
+  let body = await body_parser(context)
+  context.body = {
+    forms: {
+      ...body
+    }
+  }
 })
 
 router.get('/ip', (context) => {
@@ -25,7 +34,7 @@ router.get('/ip', (context) => {
 
 router.get('/user-agent', (context) => {
   context.body = {
-    "user-agent": context.get('User-Agent')
+    'user-agent': context.get('User-Agent')
   }
 })
 
@@ -85,7 +94,7 @@ router.all('/status/:code', (context) => {
 })
 
 router.all('/relative-redirect/:n', async (context) => {
-  if(parseInt(context.params.n, 10) === 1) return context.redirect('/get')
+  if (parseInt(context.params.n, 10) === 1) return context.redirect('/get')
 
   await sleep(300)
   context.redirect(`/relative-redirect/${parseInt(context.params.n, 10) - 1}`)

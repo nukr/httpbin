@@ -9,12 +9,6 @@ test('/', async (t) => {
   t.is(response.status, 200)
 })
 
-test('/favicon.ico', async (t) => {
-  const response = await request(app.listen()).get('/favicon.ico')
-
-  t.is(response.status, 200)
-})
-
 test('/ip', async (t) => {
   const response = await request(app.listen()).get('/ip')
   const re = /^127\.0\.0\.1:([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-8][0-9]{3}|9[0-8][0-9]{2}|99[0-8][0-9]|999[0-9]|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/
@@ -236,7 +230,6 @@ test('/response-headers?key=val', async (t) => {
 test('/redirect/:n', async (t) => {
   t.plan(2)
   let rand = Math.floor(Math.random() * 5) + 2 // 2 ~ 6
-  console.log(rand)
   const response = await request(app.listen()).get(`/redirect/${rand}`).redirects(rand)
   t.is(response.status, 200)
   t.is(response.redirects.length, rand)
@@ -298,7 +291,18 @@ test('/cookies/set?name=value', async (t) => {
 //   t.is(response.status, 200)
 //   t.falsy(response.body.cookies.test)
 // })
-// test('/basic-auth/:user/passwd')
+
+// test('/basic-auth/:user/:passwd', async (t) => {
+//   t.plan(1)
+//   const response = await request(app.listen())
+//     .get('https://httpbin.org/basic-auth/test/httpbin')
+//     .auth('gg', '22')
+
+//   console.log(response)
+
+//   t.is(response.status, 200)
+// })
+
 // test('/hidden-basic-auth/:user/passwd')
 // test('/digest-auth/:qop/:user/:passwd')
 // test('/stream/:n')
@@ -318,6 +322,13 @@ test('/cookies/set?name=value', async (t) => {
 // test('/image/jpeg')
 // test('/image/webp')
 // test('/image/svg')
-// test('/forms/post')
+test('/forms/post', async (t) => {
+  t.plan(2)
+  const response = await request(app.listen())
+          .post('/forms/post')
+          .send('test=httpbin')
+  t.is(response.status, 200)
+  t.is(response.body.forms.test, 'httpbin')
+})
 // test('/xml')
 
