@@ -1,3 +1,4 @@
+/* @flow */
 import Koa from 'koa'
 import Router from 'koa-router'
 import compress from 'koa-compress'
@@ -5,14 +6,15 @@ import { compile } from 'handlebars'
 import fs from 'mz/fs'
 import path from 'path'
 import body_parser from 'co-body'
+import logger from 'koa-logger'
 
 const app = new Koa()
 const router = new Router()
 
 router.get('/', async (context) => {
-  const source = await fs.readFile(path.join(__dirname, 'index.html'), 'utf8')
+  const source: string = await fs.readFile(path.join(__dirname, 'index.html'), 'utf8')
   const template = compile(source)
-  const html = template()
+  const html: string = template()
   context.body = html
 })
 
@@ -134,7 +136,7 @@ router.get('/favicon.ico', (context) => {
   context.status = 200
 })
 
-// app.use(logger())
+app.use(logger())
 app.use(router.routes())
 
 module.exports = app

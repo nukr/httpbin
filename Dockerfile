@@ -1,4 +1,4 @@
-FROM nukr/alpine-node:6.1.0
+FROM mhart/alpine-node:6.3.0
 
 COPY package.json /tmp/package.json
 RUN cd /tmp && npm install
