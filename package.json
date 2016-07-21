@@ -1,6 +1,6 @@
 {
   "name": "httpbin",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "httpbin(1)",
   "repository": "https://github.com/nukr/httpbin",
   "main": "index.js",
